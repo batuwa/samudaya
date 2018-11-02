@@ -1,8 +1,7 @@
 (ns samudaya.core
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [loom.graph :refer (graph nodes edges successors predecessors)]
-            [loom.alg-generic :as gen]
+            [loom.graph :refer (graph directed?)]
             [loom.alg :as alg]
             [loom.io :as lio]
             [samudaya.algo.centrality :refer :all]))
