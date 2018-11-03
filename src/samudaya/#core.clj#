@@ -11,7 +11,7 @@
   "read graph in wisemd format"
   [line]
   (let [[src x1 rel origin dest x2] (str/split line #"[,]")]
-    {:src src :dest dest :rel (str/replace rel #"[\"]" "")}))
+    {:src src :dest dest :rel rel :wt 1}))
 
 (defn line->edge
   "read graph in edge list format"
@@ -25,7 +25,8 @@
   (->> (io/reader file)
        (line-seq)
        (map line->edge-wisemd)
-       (filter (comp #{"PAR" "CHD" "RB" "RO"} :rel))))
+       )))
+
 
 (defn load-edges
   "read the graph file"
@@ -39,6 +40,31 @@
   []
   (->> (load-edges-wisemd "resources/wisemd/diseases.csv")
        ;(load-edges "resources/karate/karate.txt")
+       import community
+import networkx as nx
+import matplotlib.pyplot as plt
+
+#better with karate_graph() as defined in networkx example.
+#erdos renyi don't have true community structure
+G = nx.erdos_renyi_graph(30, 0.05)
+
+#first compute the best partition
+partition = community.best_partition(G)
+
+#drawing
+size = float(len(set(partition.values())))
+pos = nx.spring_layout(G)
+count = 0.
+for com in set(partition.values()) :
+    count = count + 1.
+    list_nodes = [nodes for nodes in partition.keys()
+                                if partition[nodes] == com]
+    nx.draw_networkx_nodes(G, pos, list_nodes, node_size = 20,
+                                node_color = str(count / size))
+
+
+nx.draw_networkx_edges(G, pos, alpha=0.5)
+plt.show()
        (map #(into [] (vals (select-keys % [:src :dest]))))
        (apply graph)))
 
