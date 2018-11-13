@@ -1,9 +1,11 @@
 (ns samudaya.algo.centrality
-  (:require [loom.graph :refer (nodes edges successors directed?)]
+  (:require [loom.graph :refer (nodes
+                                edges
+                                successors
+                                directed?)]
             [loom.alg :as alg]))
 
-;; Based on Newman-Girvan (2004) Shortest-path edge betweenness method
-;; This is based on the "Algorithm 1" and "Algorithms 7" from Brandes (2008)
+;; The implementation is based on "Algorithm 1" and "Algorithms 7" from Brandes (2008)
 
 
 ;; Single source shortest path functions
