@@ -1,14 +1,16 @@
-(ns samudaya.algo.centrality
-  (:require [loom.graph :refer (nodes
-                                edges
-                                successors
-                                directed?)]
+(ns samudaya.metrics.centrality
+  (:require [loom.graph :refer [nodes edges successors directed?]]
             [loom.alg :as alg]))
 
-;; The implementation is based on "Algorithm 1" and "Algorithms 7" from Brandes (2008)
+          
+;;; The implementation is based on "Algorithm 1" and "Algorithms 7" from Brandes (2008)
+;;; https://en.wikipedia.org/wiki/Betweenness_centrality
 
 
-;; Single source shortest path functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Node betweenness functions ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn- initialize-state
   "Represents the initial algorithmic state as an immutable map"
   [g start]
@@ -116,8 +118,7 @@
 
 ;; Rescale betweenness scores
 (defn- normalize-betweenness
-  "Normalize betweenness based on Wikipedia definition
-   https://en.wikipedia.org/wiki/Betweenness_centrality"
+  "Normalize betweenness based on Wikipedia definition."
   [n directed betweenness]
   (cond
     directed (apply merge (map (fn [[k v]] {k (* v (/ 1 (* (- n 1) (- n 2))))}) betweenness))
@@ -125,6 +126,7 @@
 
 ;; Main function
 (defn betweenness-centrality
+  "Calcualte the betweenness centrality of all the nodes in a graph."
   [g]
   (let [nodeset (nodes g)
         directed (directed? g)
@@ -136,7 +138,10 @@
          (normalize-betweenness n directed))))
 
 
-;; Edge betweenness functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Edge betweenness functions ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defn- update-edge-betweenness [cbet state]
   (let [current-node (:current-node state)
         cbet-w (cbet current-node)
@@ -183,14 +188,15 @@
 
 ;; Rescale betweenness scores
 (defn- normalize-edge-betweenness
-  "Normalize betweenness based on Wikipedia definition
-   https://en.wikipedia.org/wiki/Betweenness_centrality"
+  "Normalize betweenness based on Wikipedia definition"
   [n directed betweenness]
   (cond
     directed (apply merge (map (fn [[k v]] {k (* v (/ 1 (* n (- n 1))))}) betweenness))
     :else    (apply merge (map (fn [[k v]] {k (* v (/ 2 (* n (- n 1))))}) betweenness))))
 
+;; Main functions
 (defn edge-betweenness-centrality
+  "Calculates the betweenness centrality of each edge in a graph"
   [g]
   (let [nodeset (nodes g)
         directed (directed? g)

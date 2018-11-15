@@ -1,51 +1,38 @@
+;; TODO
+;; Communities detection algorithms
+;;  - Non-overlapping
+;;     - Classic louvain, General louvain (other quality functions)
+;;     - Stochastic Block Models
+;;     - Hierarchical Random Graphs
+;;  - Overlapping
+;;     - Clique percolation
+;;     - Link Clustering
+
 (ns samudaya.core
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str]
-            [loom.graph :refer (graph
-                                digraph)]
+  (:require [loom.graph :refer [remove-edges]]
             [loom.alg :as alg]
-            [loom.io :as lio]
-            [samudaya.algo.centrality :refer :all]))
+            [samudaya.data :refer [barbell3 grp3 karate-club create-graph]]
+            [samudaya.metrics.centrality :refer [edge-betweenness-centrality]]
+            [samudaya.utils.max-modularity :refer [init-partition]]))
 
 
-(defn line->edge-wisemd
-  "read graph in wisemd format"
-  [line]
-  (let [[src x1 rel origin dest x2] (str/split line #"[,]")]
-    {:src src :dest dest :rel (str/replace rel #"[\"]" "")}))
-
-(defn load-edges-wisemd
-  "read the graph file"
-  [file]
-  (->> (io/reader file)
-       (line-seq)
-       (map line->edge-wisemd)
-       (filter (comp #{"PAR" "CHD" "RB" "RO"} :rel))))
-
-(defn line->edge
-  "read graph in edge list format"
-  [line]
-  (let [[src dest] (str/split line #" ")]
-    {:src src :dest dest}))
-
-(defn load-edges
-  "read the graph file"
-  [file]
-  (->> (io/reader file)
-       (line-seq)
-       (map line->edge)))
-
-(defn create-graph
-  "create ubergraph from input"
-  []
-  (->> ;(load-edges-wisemd "resources/wisemd/diseases.csv")
-       (load-edges "resources/karate/karate.txt")
-       (map #(into [] (vals (select-keys % [:src :dest]))))
-       (apply graph)))
-
-
+;; Centrality-based algorithms
 (defn max-edge-betweenness [g]
-  (key (apply max-key val (edge-betweenness-centrality))))
+  (key (apply max-key val (edge-betweenness-centrality g))))
 
-(defn max-betweenness [g]
-  (key (apply max-key val (betweenness-centrality))))
+(defn girvan-newman
+  "Finds communities in a graph using the Girvan–Newman method."
+  [g]
+  (loop [graph g
+         orig-components (alg/connected-components g)
+         new-components orig-components]
+    (if (or (empty? (alg/distinct-edges graph)) (> (count new-components) (count orig-components)))
+      new-components
+      (recur (remove-edges graph (max-edge-betweenness graph)) new-components (alg/connected-components graph)))))
+
+
+;; Modularity-based algorithms
+(defn louvain
+  "Finds communities in a graph using the Louvain algorithm"
+  [g]
+  (init-partition g))
