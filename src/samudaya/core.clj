@@ -11,7 +11,7 @@
 (ns samudaya.core
   (:require [loom.graph :refer [remove-edges]]
             [loom.alg :as alg]
-            [samudaya.data :refer [barbell3 grp3 karate-club create-graph]]
+            [samudaya.data :refer [barbell3 grp3 create-graph]]
             [samudaya.metrics.centrality :refer [edge-betweenness-centrality]]
             [samudaya.utils.max-modularity :refer [init-partition]]))
 

@@ -38,6 +38,7 @@ Output
 - Implement more algorithms like louvain, stochastic block models etc
 - Add more tests
 - Clean up code and API
+- Publish to clojars and maven
 
 ## License
 
