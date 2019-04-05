@@ -1,6 +1,11 @@
-# Samudaya
+# Samudāya
 
+Clojure-based Community Detection library.
+
+> Noun (english community)
+>
 > Samudāya (समुदाय) - Sanskrit word meaning **community**, aggregate, totality or collection of individual members
+
 
 ![Samudaya logo](https://raw.githubusercontent.com/batuwa/samudaya/master/doc/samudaya_logo.png "Samudaya")
 

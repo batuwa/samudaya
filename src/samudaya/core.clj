@@ -7,6 +7,9 @@
 ;;  - Overlapping
 ;;     - Clique percolation
 ;;     - Link Clustering
+;; Graph Visualization
+;; - Look at protorepl-charts
+;; - or use vega-based viz
 
 (ns samudaya.core
   (:require [loom.graph :refer [remove-edges]]
