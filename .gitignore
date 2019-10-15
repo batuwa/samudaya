@@ -13,3 +13,7 @@ pom.xml.asc
 /resources
 /.idea
 *.iml
+.classpath
+.settings/
+.project
+.gitignore
